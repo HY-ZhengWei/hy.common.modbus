@@ -10,7 +10,7 @@ cd .\target\classes
 rd /s/q .\org\hy\common\modbus\junit
 
 
-jar cvfm hy.common.modbus.jar META-INF/MANIFEST.MF META-INF org
+jar cvfm hy.common.modbus.jar META-INF/MANIFEST.MF META-INF org com
 
 copy hy.common.modbus.jar ..\..
 del /q hy.common.modbus.jar
@@ -22,7 +22,7 @@ cd ..\..
 
 cd .\src\main\java
 xcopy /S ..\resources\* .
-jar cvfm hy.common.modbus-sources.jar META-INF\MANIFEST.MF META-INF org 
+jar cvfm hy.common.modbus-sources.jar META-INF\MANIFEST.MF META-INF org com
 copy hy.common.modbus-sources.jar ..\..\..
 del /Q hy.common.modbus-sources.jar
 rd /s/q META-INF
