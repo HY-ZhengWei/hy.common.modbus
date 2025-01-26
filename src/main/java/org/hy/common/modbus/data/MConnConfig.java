@@ -1,12 +1,8 @@
 package org.hy.common.modbus.data;
 
-import java.io.Serializable;
-
-import org.hy.common.modbus.enums.DataBit;
+import org.hy.common.hart.serialPort.SerialPortConfig;
 import org.hy.common.modbus.enums.ModbusProtocol;
 import org.hy.common.modbus.enums.ModbusType;
-import org.hy.common.modbus.enums.Parity;
-import org.hy.common.modbus.enums.StopBit;
 
 
 
@@ -19,7 +15,7 @@ import org.hy.common.modbus.enums.StopBit;
  * @createDate  2024-01-20
  * @version     v1.0
  */
-public class MConnConfig implements Serializable
+public class MConnConfig extends SerialPortConfig
 {
     
     private static final long serialVersionUID = -3779558159644911239L;
@@ -40,21 +36,6 @@ public class MConnConfig implements Serializable
     
     /** 超时时长。单位：毫秒 */
     private Integer        timeout;
-    
-    /** 通讯串口名称 */
-    private String         commPortName;
-    
-    /** 波特率 */
-    private Integer        baudRate;
-    
-    /** 数据位 */
-    private DataBit        dataBits;
-    
-    /** 停止位 */
-    private StopBit        stopBit;
-    
-    /** 奇偶校验 */
-    private Parity         parityCheck;
     
     
     
@@ -158,105 +139,6 @@ public class MConnConfig implements Serializable
     }
 
     
-    /**
-     * 获取：通讯串口名称
-     */
-    public String getCommPortName()
-    {
-        return commPortName;
-    }
-
-    
-    /**
-     * 设置：通讯串口名称
-     * 
-     * @param i_CommPortName 通讯串口名称
-     */
-    public void setCommPortName(String i_CommPortName)
-    {
-        this.commPortName = i_CommPortName;
-    }
-
-
-    /**
-     * 获取：波特率
-     */
-    public Integer getBaudRate()
-    {
-        return baudRate;
-    }
-
-    
-    /**
-     * 设置：波特率
-     * 
-     * @param i_BaudRate 波特率
-     */
-    public void setBaudRate(Integer i_BaudRate)
-    {
-        this.baudRate = i_BaudRate;
-    }
-
-    
-    /**
-     * 获取：数据位
-     */
-    public DataBit getDataBits()
-    {
-        return dataBits;
-    }
-
-    
-    /**
-     * 设置：数据位
-     * 
-     * @param i_DataBits 数据位
-     */
-    public void setDataBits(DataBit i_DataBits)
-    {
-        this.dataBits = i_DataBits;
-    }
-
-    
-    /**
-     * 获取：停止位
-     */
-    public StopBit getStopBit()
-    {
-        return stopBit;
-    }
-
-    
-    /**
-     * 设置：停止位
-     * 
-     * @param i_StopBit 停止位
-     */
-    public void setStopBit(StopBit i_StopBit)
-    {
-        this.stopBit = i_StopBit;
-    }
-
-    
-    /**
-     * 获取：奇偶校验
-     */
-    public Parity getParityCheck()
-    {
-        return parityCheck;
-    }
-
-    
-    /**
-     * 设置：奇偶校验
-     * 
-     * @param i_ParityCheck 奇偶校验
-     */
-    public void setParityCheck(Parity i_ParityCheck)
-    {
-        this.parityCheck = i_ParityCheck;
-    }
-
 
     @Override
     public String toString()
@@ -273,7 +155,7 @@ public class MConnConfig implements Serializable
         else if ( ModbusProtocol.RTU.equals(this.protocol) || ModbusProtocol.ASCII.equals(this.protocol) )
         {
             v_Builder.append(this.protocol.getValue()).append(":");
-            v_Builder.append(this.commPortName);
+            v_Builder.append(this.getCommPortName());
         }
         else
         {

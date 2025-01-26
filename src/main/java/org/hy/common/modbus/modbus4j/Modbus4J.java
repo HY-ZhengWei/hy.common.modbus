@@ -1,20 +1,18 @@
 package org.hy.common.modbus.modbus4j;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.hy.common.Help;
+import org.hy.common.hart.serialPort.SerialPortFactory;
 import org.hy.common.modbus.IModbus;
 import org.hy.common.modbus.data.MConnConfig;
 import org.hy.common.modbus.data.MDataItem;
 import org.hy.common.modbus.enums.ModbusProtocol;
 import org.hy.common.modbus.enums.ModbusType;
 import org.hy.common.xml.log.Logger;
-
-import com.fazecast.jSerialComm.SerialPort;
 
 import com.serotonin.modbus4j.BatchRead;
 import com.serotonin.modbus4j.BatchResults;
@@ -157,21 +155,11 @@ public class Modbus4J implements IModbus
             }
             else if ( ModbusProtocol.RTU.equals(this.config.getProtocol()) )
             {
-                SerialPort v_SerialPort = getCommPortByName(this.config.getCommPortName());
-                v_SerialPort.setBaudRate(   this.config.getBaudRate());
-                v_SerialPort.setNumDataBits(this.config.getDataBits().getValue());
-                v_SerialPort.setNumStopBits(this.config.getStopBit().getValue());
-                v_SerialPort.setParity(     this.config.getParityCheck().getValue());
-                this.master = getModbusFactory().createRtuMaster(new SerialPortWrapperImpl(v_SerialPort));
+                this.master = getModbusFactory().createRtuMaster(SerialPortFactory.get(this.config ,SerialPortWrapperImpl.class));
             }
             else if ( ModbusProtocol.ASCII.equals(this.config.getProtocol()) )
             {
-                SerialPort v_SerialPort = getCommPortByName(this.config.getCommPortName());
-                v_SerialPort.setBaudRate(   this.config.getBaudRate());
-                v_SerialPort.setNumDataBits(this.config.getDataBits().getValue());
-                v_SerialPort.setNumStopBits(this.config.getStopBit().getValue());
-                v_SerialPort.setParity(     this.config.getParityCheck().getValue());
-                this.master = getModbusFactory().createAsciiMaster(new SerialPortWrapperImpl(v_SerialPort));
+                this.master = getModbusFactory().createAsciiMaster(SerialPortFactory.get(this.config ,SerialPortWrapperImpl.class));
             }
             
             try
@@ -759,89 +747,6 @@ public class Modbus4J implements IModbus
         }
         
         return null;
-    }
-    
-    
-    
-    /**
-     * 按串口名称匹配到串口对象
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2024-12-30
-     * @version     v1.0
-     * 
-     * @param i_CommPortName  串口名称
-     * @return
-     */
-    private static SerialPort getCommPortByName(String i_CommPortName)
-    {
-        SerialPort [] v_Ports = SerialPort.getCommPorts();
-        
-        for (SerialPort v_Port : v_Ports)
-        {
-            if ( i_CommPortName.equals(v_Port.getDescriptivePortName()) )
-            {
-                return v_Port;
-            }
-        }
-        
-        return null;
-    }
-    
-    
-
-    /**
-     * 获取所有串口名称
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2024-12-30
-     * @version     v1.0
-     *
-     * @return
-     */
-    public static List<String> getCommPortNames()
-    {
-        List<String>  v_Ret   = new ArrayList<String>();
-        SerialPort [] v_Ports = SerialPort.getCommPorts();
-        
-        for (SerialPort v_Port : v_Ports)
-        {
-            v_Ret.add(v_Port.getDescriptivePortName());
-        }
-        
-        return v_Ret;
-    }
-    
-    
-    
-    /**
-     * 验证串口名称
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2024-12-30
-     * @version     v1.0
-     * 
-     * @param i_CommPortName  串口名称
-     * @return
-     */
-    public static boolean checkCommPortName(String i_CommPortName)
-    {
-        List<String> v_CommPortNames = getCommPortNames();
-        
-        if ( Help.isNull(v_CommPortNames) )
-        {
-            return false;
-        }
-        
-        for (String v_Name : v_CommPortNames)
-        {
-            if ( v_Name.equals(i_CommPortName) )
-            {
-                return true;
-            }
-        }
-        
-        return false;
     }
     
 }
