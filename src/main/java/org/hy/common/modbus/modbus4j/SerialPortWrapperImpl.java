@@ -1,6 +1,5 @@
 package org.hy.common.modbus.modbus4j;
 
-import org.hy.common.hart.serialPort.SerialPortConfig;
 import org.hy.common.hart.serialPort.SerialPortWrapperDefault;
 
 import com.serotonin.modbus4j.serial.SerialPortWrapper;
@@ -19,9 +18,9 @@ import com.serotonin.modbus4j.serial.SerialPortWrapper;
 public class SerialPortWrapperImpl extends SerialPortWrapperDefault implements SerialPortWrapper
 {
 
-    public SerialPortWrapperImpl(SerialPortConfig i_Config)
+    public SerialPortWrapperImpl()
     {
-        super(i_Config);
+        super();
     }
     
 }
