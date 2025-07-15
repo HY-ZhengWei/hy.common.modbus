@@ -31,6 +31,9 @@ public class MDataItem implements Serializable
     /** 数据类型。参见 org.hy.common.modbus.enums.ModbusData */
     private ModbusData dataType;
     
+    /** 数据（用于写入） */
+    private String     data;
+    
     
     
     public MDataItem()
@@ -41,9 +44,16 @@ public class MDataItem implements Serializable
     
     public MDataItem(String i_Name ,Integer i_Offset ,ModbusData i_DataType)
     {
+        this(i_Name ,i_Offset ,i_DataType ,null);
+    }
+    
+    
+    public MDataItem(String i_Name ,Integer i_Offset ,ModbusData i_DataType ,String i_Data)
+    {
         this.name     = i_Name;
         this.offset   = i_Offset;
         this.dataType = i_DataType;
+        this.data     = i_Data;
     }
     
     
@@ -104,6 +114,26 @@ public class MDataItem implements Serializable
     public void setDataType(ModbusData i_DataType)
     {
         this.dataType = i_DataType;
+    }
+
+    
+    /**
+     * 获取：数据（用于写入）
+     */
+    public String getData()
+    {
+        return data;
+    }
+
+    
+    /**
+     * 设置：数据（用于写入）
+     * 
+     * @param i_Data 数据（用于写入）
+     */
+    public void setData(String i_Data)
+    {
+        this.data = i_Data;
     }
     
 }
