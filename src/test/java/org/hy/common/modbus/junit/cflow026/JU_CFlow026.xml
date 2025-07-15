@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xmodbusset" class="org.hy.common.modbus.callflow.ModbusSetConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xreturn id="XReturn_CF026_完成">
+            <comment>结束</comment>
+            <retValue>
+            {
+                "retInt": 200,
+                "retText": "结束"
+            }
+            </retValue>
+        </xreturn>
+        
+        
+        <xwait id="XWait_CF026_等待1ms">
+            <comment>等待1ms</comment> 
+            <waitTime>1</waitTime>                         <!-- 等待时长（单位：毫秒） -->
+            <route>
+                <if>                                        <!-- For循环结束点（再次循环点） -->
+                    <next>:XFor_CF026_1</next>
+                    <comment>循环的下一步</comment>
+                </if>
+                <else>
+                    <next ref="XReturn_CF026_完成" />
+                    <comment>退出循环后的节点</comment>
+                </else>
+            </route>
+        </xwait>
+        
+        
+        <xapi id="XAPI_CF026_写库">
+            <comment>接口请求，转换响应结果</comment>
+            <url>http://10.0.1.20:32194/msData/task/executeTask</url> <!-- 定义接口请求URL地址 -->
+            <body>                                               <!-- 定义接口请求体 -->
+                {
+                    "userID": "ZhengWei",
+                    "executeParams": "{\"agentTemperature\": \":datas.dataItems.1.temperature\" ,\"temperature\": \":datas.dataItems.1.temperatureOrg\",\"recordTime\": \":datas.dataItems.1.time\"}",
+                    "xid": "XSQL_Temperature_Insert"
+                }
+            </body>
+            <succeedFlag>200</succeedFlag>
+            <route>
+                <succeed>                                   
+                    <next ref="XWait_CF026_等待1ms" />
+                </succeed>
+            </route>
+        </xapi>
+    
+        
+        <xmodbusset id="XModbusSet_CF026_显示全部温度">
+            <comment>写时间与温度</comment>
+            <deviceXID>:LED显示器_01</deviceXID>
+            <slaveID>1</slaveID>
+            <datagramXID>:LEDData_01</datagramXID>
+            <context>
+                {
+                    "timed_01": ":datas.dataItems.0.timeString",
+                    "value_01": ":datas.dataItems.0.temperatureString",
+                    "timed_02": ":datas.dataItems.1.timeString",
+                    "value_02": ":datas.dataItems.1.temperatureString",
+                    "timed_03": ":datas.dataItems.2.timeString",
+                    "value_03": ":datas.dataItems.2.temperatureString",
+                    "timed_04": ":datas.dataItems.3.timeString",
+                    "value_04": ":datas.dataItems.3.temperatureString"
+                }
+            </context>
+            <route>
+                <succeed>
+                    <next ref="XAPI_CF026_写库" />
+                </succeed>
+            </route>
+        </xmodbusset>
+        
+        
+        <xwait id="XWait_CF026_等待1秒">
+            <comment>等待1秒</comment>
+            <waitTime>1000</waitTime>                       <!-- 等待时长（单位：毫秒） -->
+            <route>
+                <if>                                        <!-- For循环结束点（再次循环点） -->
+                    <next>:XFor_CF026_1</next>
+                    <comment>循环的下一步</comment>
+                </if>
+                <else>
+                    <next ref="XReturn_CF026_完成" />
+                    <comment>退出循环后的节点</comment>
+                </else>
+            </route>
+        </xwait>
+        
+        
+        <xmodbusset id="XModbusSet_CF026_显示最新温度">
+            <comment>写时间与温度</comment>
+            <deviceXID>:LED显示器_01</deviceXID>
+            <slaveID>1</slaveID>
+            <datagramXID>:LEDData_02</datagramXID>
+            <context>
+                {
+                    "value_01": ":datas.dataItems.0.temperatureString",
+                }
+            </context>
+            <route>
+                <succeed>
+                    <next ref="XWait_CF026_等待1秒" />
+                </succeed>
+            </route>
+        </xmodbusset>
+        
+        
+        <xcondition id="XNode_CF026_判定写库">
+            <comment>启动完成状态</comment>
+            <conditionItem>
+                <valueXIDA>:isWrite</valueXIDA>
+            </conditionItem>
+            <route>
+                <if>
+                    <next ref="XModbusSet_CF026_显示全部温度" />
+                </if>
+                <else>
+                    <next ref="XModbusSet_CF026_显示最新温度" />
+                </else>
+            </route>
+        </xcondition>
+        
+        
+        <xnode id="XNode_CF026_计算是否写库">
+            <comment>模拟采集温度数据</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>isWriteDB</callMethod>              <!-- 定义执行方法 -->
+            <callParam>
+                <value>:LEDData</value>                     <!-- 定义入参变量名称 -->
+            </callParam>
+            <callParam>
+                <value>:datas</value>                       <!-- 定义入参变量名称 -->
+            </callParam>
+            <returnID>isWrite</returnID>
+            <route>
+                <succeed>
+                    <next ref="XNode_CF026_判定写库" />
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        <xapi id="XAPI_CF026_温度算法">
+            <comment>接口请求，转换响应结果</comment>
+            <url>http://10.0.2.66:5000/temperature/process</url> <!-- 定义接口请求URL地址 -->
+            <body>                                               <!-- 定义接口请求体 -->
+                {
+                    "temperature": :LEDData.temperature,
+                    "timestamp": ":LEDData.time"
+                }
+            </body>
+            <succeedFlag>200</succeedFlag>
+            <returnClass>org.hy.common.modbus.junit.cflow026.program.LEDDatas</returnClass>  <!-- 定义接口返回结果转换为的类型 -->
+            <returnID>datas</returnID>
+            <route>
+                <succeed>                                   
+                    <next ref="XNode_CF026_计算是否写库" />
+                </succeed>
+            </route>
+        </xapi>
+        
+        
+        <xnode id="XNode_CF026_采集到的温度">
+            <comment>模拟采集温度数据</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>getData</callMethod>                <!-- 定义执行方法 -->
+            <returnID>LEDData</returnID>
+            <route>
+                <succeed>
+                    <next ref="XAPI_CF026_温度算法" />
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        <xfor id="XFor_CF026_1">
+            <comment>循环：1到1000</comment>
+            <start>1</start>                                <!-- 循环开始值 -->
+            <end>1000</end>                                 <!-- 循环结束值 -->
+            <step>1</step>                                  <!-- 步长，可选项，默认为1 -->
+            <indexID>ForIndex</indexID>                     <!-- 序号变量名称 -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF026_采集到的温度" />
+                    <comment>For循环</comment>
+                </succeed>
+            </route>
+        </xfor>
+        
+    </xconfig>
+    
+</config>

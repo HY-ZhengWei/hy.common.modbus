@@ -13,6 +13,7 @@ import org.hy.common.modbus.data.MDataItem;
 import org.hy.common.modbus.enums.ModbusData;
 import org.hy.common.modbus.enums.ModbusProtocol;
 import org.hy.common.modbus.enums.ModbusType;
+import org.hy.common.modbus.junit.cflow025.program.LEDData;
 import org.hy.common.modbus.modbus4j.Modbus4J;
 import org.junit.Test;
 
@@ -186,8 +187,6 @@ public class JU_Modbus
     @Test
     public void test_Modbus4j_TCP_LED显示屏() throws InterruptedException
     {
-        Thread.sleep(10000);
-        
         MConnConfig v_Config = new MConnConfig();
         v_Config.setHost("192.168.0.101");
         v_Config.setPort(502);
@@ -260,61 +259,6 @@ public class JU_Modbus
             
             Thread.sleep(1000);
         }
-    }
-    
-    
-    
-    
-    
-    class LEDData
-    {
-        /** 时间 */
-        private Date    time;
-        
-        /** 温度 */
-        private Integer temperature;
-
-        
-        
-        /**
-         * 获取：时间
-         */
-        public Date getTime()
-        {
-            return time;
-        }
-
-        
-        /**
-         * 设置：时间
-         * 
-         * @param i_Time 时间
-         */
-        public void setTime(Date i_Time)
-        {
-            this.time = i_Time;
-        }
-
-        
-        /**
-         * 获取：温度
-         */
-        public Integer getTemperature()
-        {
-            return temperature;
-        }
-
-        
-        /**
-         * 设置：温度
-         * 
-         * @param i_Temperature 温度
-         */
-        public void setTemperature(Integer i_Temperature)
-        {
-            this.temperature = i_Temperature;
-        }
-        
     }
     
 }
