@@ -16,7 +16,8 @@
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
-    <import name="xmodbusset" class="org.hy.common.modbus.callflow.ModbusSetConfig" />
+    <import name="xdaset"     class="org.hy.common.modbus.callflow.DASetConfig" />
+    <import name="xdaget"     class="org.hy.common.modbus.callflow.DAGetConfig" />
     
     
     
@@ -50,7 +51,7 @@
         </xwait>
         
     
-        <xmodbusset id="XModbusSet_CF025_1_1_1">
+        <xdaset id="XDASet_CF025_1_1_1">
             <comment>写时间与温度</comment>
             <deviceXID>:LED显示器_01</deviceXID>
             <slaveID>1</slaveID>
@@ -72,7 +73,7 @@
                     <next ref="XWait_CF025_1_1_1_1_1" />
                 </succeed>
             </route>
-        </xmodbusset>
+        </xdaset>
         
         
         <xnode id="XNode_CF025_1_1">
@@ -82,7 +83,7 @@
             <returnID>datas</returnID>
             <route>
                 <succeed>
-                    <next ref="XModbusSet_CF025_1_1_1" />
+                    <next ref="XDASet_CF025_1_1_1" />
                 </succeed>
             </route>
         </xnode>

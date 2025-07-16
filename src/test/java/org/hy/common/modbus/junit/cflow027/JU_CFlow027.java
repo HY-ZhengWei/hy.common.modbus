@@ -1,4 +1,4 @@
-package org.hy.common.modbus.junit.cflow026;
+package org.hy.common.modbus.junit.cflow027;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,10 +7,15 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import org.hy.common.Date;
+import org.hy.common.Help;
 import org.hy.common.Return;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.forloop.ForConfig;
+import org.hy.common.hart.enums.DataBit;
+import org.hy.common.hart.enums.Parity;
+import org.hy.common.hart.enums.StopBit;
+import org.hy.common.hart.serialPort.SerialPortFactory;
 import org.hy.common.modbus.IModbus;
 import org.hy.common.modbus.data.MConnConfig;
 import org.hy.common.modbus.data.MDataItem;
@@ -18,7 +23,7 @@ import org.hy.common.modbus.enums.ModbusData;
 import org.hy.common.modbus.enums.ModbusProtocol;
 import org.hy.common.modbus.enums.ModbusType;
 import org.hy.common.modbus.junit.JUBase;
-import org.hy.common.modbus.junit.cflow026.program.Program;
+import org.hy.common.modbus.junit.cflow027.program.Program;
 import org.hy.common.modbus.modbus4j.Modbus4J;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
@@ -32,22 +37,22 @@ import org.junit.runners.MethodSorters;
 
 
 /**
- * 测试单元：编排引擎026：Modbus写数据，温度算法
+ * 测试单元：编排引擎027：A设备的Modbus读数据，B设备Modbus写数据，温度算法
  *
  * @author      ZhengWei(HY)
- * @createDate  2025-07-14
+ * @createDate  2025-07-16
  * @version     v1.0
  */
 @Xjava(value=XType.XML)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) 
-public class JU_CFlow026 extends JUBase
+public class JU_CFlow027 extends JUBase
 {
     
     private static boolean $isInit = false;
     
     
     
-    public JU_CFlow026() throws Exception
+    public JU_CFlow027() throws Exception
     {
         if ( !$isInit )
         {
@@ -71,16 +76,36 @@ public class JU_CFlow026 extends JUBase
      */
     private void initDeviceXID()
     {
-        MConnConfig v_Config = new MConnConfig();
-        v_Config.setHost("192.168.0.101");
-        v_Config.setPort(502);
-        v_Config.setProtocol(ModbusProtocol.TCP);
-        v_Config.setType(    ModbusType.Master);
+        // 显示所有串口名称
+        List<String> v_DataList = SerialPortFactory.getCommPortNames();
+        Help.print(v_DataList);
         
-        IModbus v_Modbus = new Modbus4J(v_Config);
-        v_Modbus.init();
         
-        XJava.putObject("LED显示器_01" ,v_Modbus);
+        MConnConfig v_ConfigLED = new MConnConfig();
+        v_ConfigLED.setHost("192.168.0.101");
+        v_ConfigLED.setPort(502);
+        v_ConfigLED.setProtocol(ModbusProtocol.TCP);
+        v_ConfigLED.setType(    ModbusType.Master);
+        
+        IModbus v_ModbusLED = new Modbus4J(v_ConfigLED);
+        v_ModbusLED.init();
+        
+        XJava.putObject("LED显示器_01" ,v_ModbusLED);
+        
+        
+        MConnConfig v_ConfigThermometer = new MConnConfig();
+        v_ConfigThermometer.setCommPortName("USB Serial Port (COM12)");
+        v_ConfigThermometer.setBaudRate(9600);
+        v_ConfigThermometer.setDataBits(DataBit.DataBit_8);
+        v_ConfigThermometer.setStopBit(StopBit.One);
+        v_ConfigThermometer.setParityCheck(Parity.None);
+        v_ConfigThermometer.setProtocol(ModbusProtocol.RTU);
+        v_ConfigThermometer.setType(    ModbusType.Master);
+        
+        IModbus v_ModbusThermometer = new Modbus4J(v_ConfigThermometer);
+        v_ModbusThermometer.init();
+        
+        XJava.putObject("Thermometer红外测温仪_01" ,v_ModbusThermometer);
     }
     
     
@@ -157,26 +182,36 @@ public class JU_CFlow026 extends JUBase
         
         XJava.putObject("LEDDataDatagram_01" ,v_MItems1);
         XJava.putObject("LEDDataDatagram_02" ,v_MItems2);
+        
+        
+        
+        List<MDataItem> v_MItemsThermometer = new ArrayList<MDataItem>();
+        v_MItem = new MDataItem();
+        v_MItem.setName("temperatureValue");
+        v_MItem.setOffset(1);
+        v_MItem.setDataType(ModbusData.D2B_Int_Signed);
+        v_MItemsThermometer.add(v_MItem);
+        
+        XJava.putObject("ThermometerDatagram" ,v_MItemsThermometer);
     }
     
     
     
     @Test
-    public void test_CFlow026() throws InterruptedException
+    public void test_CFlow027() throws InterruptedException
     {
-        test_CFlow026_Inner();
-        
+        test_CFlow027_Inner();
     }
     
     
     
-    private void test_CFlow026_Inner() throws InterruptedException
+    private void test_CFlow027_Inner() throws InterruptedException
     {
         // 初始化被编排的执行对象方法
         XJava.putObject("XProgram" ,new Program());
         
         // 获取编排中的首个元素
-        ForConfig           v_ForConfig = (ForConfig) XJava.getObject("XFor_CF026_1");
+        ForConfig           v_ForConfig = (ForConfig) XJava.getObject("XFor_CF027_1");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
         
         // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）

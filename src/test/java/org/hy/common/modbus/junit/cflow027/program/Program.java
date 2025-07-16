@@ -1,8 +1,9 @@
-package org.hy.common.modbus.junit.cflow026.program;
+package org.hy.common.modbus.junit.cflow027.program;
 
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.modbus.junit.cflow025.program.LEDData;
+import org.hy.common.modbus.junit.cflow026.program.LEDDatas;
 
 
 
@@ -33,11 +34,11 @@ public class Program
      * @version     v1.0
      *
      */
-    private LEDData newData()
+    private LEDData newData(Integer i_ThermometerData)
     {
         LEDData v_Data = new LEDData();
         v_Data.setTime(new Date());
-        v_Data.setTemperature(Help.random(0 ,2000));
+        v_Data.setTemperature(i_ThermometerData);
         
         return v_Data;
     }
@@ -53,9 +54,9 @@ public class Program
      *
      * @return
      */
-    public LEDData getData()
+    public LEDData getData(Integer i_ThermometerData)
     {
-        return this.newData();
+        return this.newData(i_ThermometerData);
     }
     
     
