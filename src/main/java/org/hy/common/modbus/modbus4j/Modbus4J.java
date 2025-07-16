@@ -1,6 +1,7 @@
 package org.hy.common.modbus.modbus4j;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -44,6 +45,7 @@ import com.serotonin.modbus4j.msg.WriteRegistersResponse;
  * @createDate  2024-01-20
  * @version     v1.0
  *              v2.0  2025-06-30  添加：write系列方法
+ *              v3.0  2025-07-15  添加：reads方法，按数据报文中数据项的类型，从两个常用的输出类型批量读取数据
  */
 public class Modbus4J implements IModbus
 {
@@ -760,6 +762,75 @@ public class Modbus4J implements IModbus
         }
         
         return null;
+    }
+    
+    
+    
+    /**
+     * 按数据报文中数据项的类型，从两个常用的输出类型批量读取数据。
+     * 
+     *   分别从下面两个输出类型批量读取数据
+     *   1. Boolean类型，从输出线圈  （功能码01）批量读取数据。即，读取[01 Coil Status 0x]类型 开关数据
+     *   2. Integer类型，从输出寄存器（功能码03）批量读取数据。即，读取[03 Holding Register类型 2x]模拟量数据
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-07-15
+     * @version     v1.0
+     *
+     * @param i_SlaveID
+     * @param i_Datagram
+     * @return
+     */
+    public Map<String ,Object> reads(int i_SlaveID ,List<? extends MDataItem> i_Datagram)
+    {
+        if ( Help.isNull(i_Datagram) )
+        {
+            return null;
+        }
+        
+        List<MDataItem> v_DatagramBoolean = new ArrayList<MDataItem>();
+        List<MDataItem> v_DatagramInteger = new ArrayList<MDataItem>();
+        for (MDataItem v_MDItem : i_Datagram)
+        {
+            if ( ModbusData.D1Bit.equals(v_MDItem.getDataType()) )
+            {
+                v_DatagramBoolean.add(v_MDItem);
+            }
+            else
+            {
+                v_DatagramInteger.add(v_MDItem);
+            }
+        }
+        
+        Map<String ,Object> v_RetBoolean = null;
+        Map<String ,Object> v_RetInteger = null;
+        if ( !Help.isNull(v_DatagramBoolean) )
+        {
+            v_RetBoolean = this.readOutputStatus(i_SlaveID ,v_DatagramBoolean);
+        }
+        if ( !Help.isNull(v_DatagramInteger) )
+        {
+            v_RetInteger = this.readOutputRegister(i_SlaveID ,v_DatagramInteger);
+        }
+        
+        if ( Help.isNull(v_RetBoolean) && Help.isNull(v_DatagramInteger) )
+        {
+            return new LinkedHashMap<String ,Object>();
+        }
+        else if ( Help.isNull(v_RetBoolean) )
+        {
+            return v_RetInteger;
+        }
+        else if ( Help.isNull(v_RetInteger) )
+        {
+            return v_RetBoolean;
+        }
+        else
+        {
+            v_RetBoolean.putAll(v_RetInteger);
+            v_RetInteger.clear();
+            return v_RetBoolean;
+        }
     }
     
     

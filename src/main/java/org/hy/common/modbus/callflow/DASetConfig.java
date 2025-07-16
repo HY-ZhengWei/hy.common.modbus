@@ -26,18 +26,18 @@ import org.hy.common.xml.log.Logger;
 
 
 /**
- * 写Modbus元素：设置Modbus数据的配置
+ * 写DA数采元素：设置Modbus数据的配置
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-07-01
  * @version     v1.0
  */
-public class ModbusSetConfig extends NodeConfig implements NodeConfigBase
+public class DASetConfig extends NodeConfig implements NodeConfigBase
 {
     
-    private static final Logger $Logger      = new Logger(ModbusSetConfig.class);
+    private static final Logger $Logger      = new Logger(DASetConfig.class);
     
-    private static final String $ElementType = "xmodbusset";
+    private static final String $ElementType = "xdaset";
     
     
     
@@ -62,7 +62,7 @@ public class ModbusSetConfig extends NodeConfig implements NodeConfigBase
     
     static 
     {
-        CallFlow.getHelpExport().addImportHead($ElementType ,ModbusSetConfig.class);
+        CallFlow.getHelpExport().addImportHead($ElementType ,DASetConfig.class);
     }
     
     
@@ -71,11 +71,11 @@ public class ModbusSetConfig extends NodeConfig implements NodeConfigBase
      * 构造器
      *
      * @author      ZhengWei(HY)
-     * @createDate  2025-03-07
+     * @createDate  2025-07-01
      * @version     v1.0
      *
      */
-    public ModbusSetConfig()
+    public DASetConfig()
     {
         this(0L ,0L);
     }
@@ -92,7 +92,7 @@ public class ModbusSetConfig extends NodeConfig implements NodeConfigBase
      * @param i_RequestTotal  累计的执行次数
      * @param i_SuccessTotal  累计的执行成功次数
      */
-    public ModbusSetConfig(long i_RequestTotal ,long i_SuccessTotal)
+    public DASetConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
         
@@ -125,7 +125,7 @@ public class ModbusSetConfig extends NodeConfig implements NodeConfigBase
      */
     public String getElementType()
     {
-        return "MODBUSSET";
+        return "DASET";
     }
     
     
@@ -285,7 +285,7 @@ public class ModbusSetConfig extends NodeConfig implements NodeConfigBase
      * 建议：子类重写此方法
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-03-11
+     * @createDate  2025-07-01
      * @version     v1.0
      *
      * @param io_Context        上下文类型的变量信息
@@ -306,7 +306,7 @@ public class ModbusSetConfig extends NodeConfig implements NodeConfigBase
      * 建议：子类重写此方法
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-03-11
+     * @createDate  2025-07-01
      * @version     v1.0
      *
      * @param io_Context        上下文类型的变量信息
@@ -544,7 +544,7 @@ public class ModbusSetConfig extends NodeConfig implements NodeConfigBase
      */
     public Object newMy()
     {
-        return new ModbusSetConfig();
+        return new DASetConfig();
     }
     
     
@@ -563,7 +563,7 @@ public class ModbusSetConfig extends NodeConfig implements NodeConfigBase
      */
     public Object cloneMyOnly()
     {
-        ModbusSetConfig v_Clone = new ModbusSetConfig();
+        DASetConfig v_Clone = new DASetConfig();
         
         this.cloneMyOnly(v_Clone);
         v_Clone.setTimeout(    this.getTimeout());
@@ -597,10 +597,10 @@ public class ModbusSetConfig extends NodeConfig implements NodeConfigBase
     {
         if ( Help.isNull(this.xid) )
         {
-            throw new NullPointerException("Clone ModbusSetConfig xid is null.");
+            throw new NullPointerException("Clone DASetConfig xid is null.");
         }
         
-        ModbusSetConfig v_Clone = (ModbusSetConfig) io_Clone;
+        DASetConfig v_Clone = (DASetConfig) io_Clone;
         ((ExecuteElement) this).clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
         
         v_Clone.setTimeout(    this.getTimeout());
@@ -630,12 +630,12 @@ public class ModbusSetConfig extends NodeConfig implements NodeConfigBase
     {
         if ( Help.isNull(this.xid) )
         {
-            throw new NullPointerException("Clone ModbusSetConfig xid is null.");
+            throw new NullPointerException("Clone DASetConfig xid is null.");
         }
         
         Map<String ,ExecuteElement> v_XIDObjects = new HashMap<String ,ExecuteElement>();
         Return<String>              v_Version    = parserXIDVersion(this.xid);
-        ModbusSetConfig             v_Clone      = new ModbusSetConfig();
+        DASetConfig                 v_Clone      = new DASetConfig();
         
         if ( v_Version.booleanValue() )
         {
