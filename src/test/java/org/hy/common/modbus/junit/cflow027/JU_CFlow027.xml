@@ -130,7 +130,7 @@
         
         
         <xcondition id="XNode_CF027_判定写库">
-            <comment>启动完成状态</comment>
+            <comment>判定写库</comment>
             <conditionItem>
                 <valueXIDA>:isWrite</valueXIDA>
             </conditionItem>
@@ -146,7 +146,7 @@
         
         
         <xnode id="XNode_CF027_计算是否写库">
-            <comment>模拟采集温度数据</comment>
+            <comment>计算是否写库</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMethod>isWriteDB</callMethod>              <!-- 定义执行方法 -->
             <callParam>

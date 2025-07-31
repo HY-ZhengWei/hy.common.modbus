@@ -439,22 +439,13 @@ public class DASetConfig extends NodeConfig implements NodeConfigBase
         }
         else
         {
-            try
+            if ( XJava.getObject(ValueHelp.standardValueID(this.getDeviceXID())) != null )
             {
-                String v_DeviceXID = (String) ValueHelp.getValue(this.getDeviceXID() ,String.class ,null ,i_Context);
-                if ( XJava.getObject(v_DeviceXID) != null )
-                {
-                    v_Builder.append(v_DeviceXID);
-                }
-                else
-                {
-                    v_Builder.append("[NULL]");
-                }
+                v_Builder.append(this.getDeviceXID());
             }
-            catch (Exception exce)
+            else
             {
-                $Logger.error(exce);
-                v_Builder.append("[ERROR]");
+                v_Builder.append("[NULL]");
             }
         }
         

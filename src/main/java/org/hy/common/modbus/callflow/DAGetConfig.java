@@ -300,55 +300,53 @@ public class DAGetConfig extends NodeConfig implements NodeConfigBase
     {
         StringBuilder v_Builder = new StringBuilder();
         
-        if ( !Help.isNull(this.returnID) )
+        try
         {
-            v_Builder.append(DBSQL.$Placeholder).append(this.returnID).append(" = ");
-        }
-        
-        if ( Help.isNull(this.getDeviceXID()) )
-        {
-            v_Builder.append("?");
-        }
-        else
-        {
-            try
+            if ( !Help.isNull(this.returnID) )
             {
-                String v_DeviceXID = (String) ValueHelp.getValue(this.getDeviceXID() ,String.class ,null ,i_Context);
-                if ( XJava.getObject(v_DeviceXID) != null )
+                v_Builder.append(DBSQL.$Placeholder).append(this.returnID).append(" = ");
+            }
+            
+            if ( Help.isNull(this.getDeviceXID()) )
+            {
+                v_Builder.append("?");
+            }
+            else
+            {
+                if ( XJava.getObject(ValueHelp.standardValueID(this.getDeviceXID())) != null )
                 {
-                    v_Builder.append(v_DeviceXID);
+                    v_Builder.append(this.getDeviceXID());
                 }
                 else
                 {
                     v_Builder.append("[NULL]");
                 }
             }
-            catch (Exception exce)
+            
+            v_Builder.append(".");
+            
+            if ( Help.isNull(this.getDatagramXID()) )
             {
-                $Logger.error(exce);
-                v_Builder.append("[ERROR]");
-            }
-        }
-        
-        v_Builder.append(".");
-        
-        if ( Help.isNull(this.getDatagramXID()) )
-        {
-            v_Builder.append("?");
-        }
-        else
-        {
-            if ( XJava.getObject(ValueHelp.standardValueID(this.getDatagramXID())) != null )
-            {
-                v_Builder.append(this.getDatagramXID());
+                v_Builder.append("?");
             }
             else
             {
-                v_Builder.append("[NULL]");
+                if ( XJava.getObject(ValueHelp.standardValueID(this.getDatagramXID())) != null )
+                {
+                    v_Builder.append(this.getDatagramXID());
+                }
+                else
+                {
+                    v_Builder.append("[NULL]");
+                }
             }
+            
+            v_Builder.append(".reads");
         }
-        
-        v_Builder.append(".reads");
+        catch (Exception exce)
+        {
+            $Logger.error(exce);
+        }
         
         return v_Builder.toString();
     }
