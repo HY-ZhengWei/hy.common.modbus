@@ -1,5 +1,6 @@
 package org.hy.common.modbus.data;
 
+import org.hy.common.Help;
 import org.hy.common.hart.serialPort.SerialPortConfig;
 import org.hy.common.modbus.enums.ModbusProtocol;
 import org.hy.common.modbus.enums.ModbusType;
@@ -14,6 +15,7 @@ import org.hy.common.modbus.enums.ModbusType;
  * @author      ZhengWei(HY)
  * @createDate  2024-01-20
  * @version     v1.0
+ *              v2.0  2025-08-28  添加：出现异常时，是否重新连接
  */
 public class MConnConfig extends SerialPortConfig
 {
@@ -37,6 +39,15 @@ public class MConnConfig extends SerialPortConfig
     /** 超时时长。单位：毫秒 */
     private Integer        timeout;
     
+    /** 出现异常时，是否重新连接。默认值：真 */
+    private Integer        reconnect;
+    
+    
+    
+    public MConnConfig()
+    {
+        this.reconnect = 1;
+    }
     
     
     /**
@@ -136,6 +147,26 @@ public class MConnConfig extends SerialPortConfig
     public void setTimeout(Integer i_Timeout)
     {
         this.timeout = i_Timeout;
+    }
+    
+    
+    /**
+     * 获取：出现异常时，是否重新连接。默认值：真
+     */
+    public Integer getReconnect()
+    {
+        return Help.NVL(this.reconnect ,1);
+    }
+
+    
+    /**
+     * 设置：出现异常时，是否重新连接。默认值：真
+     * 
+     * @param i_Reconnect 出现异常时，是否重新连接。默认值：真
+     */
+    public void setReconnect(Integer i_Reconnect)
+    {
+        this.reconnect = i_Reconnect;
     }
 
     

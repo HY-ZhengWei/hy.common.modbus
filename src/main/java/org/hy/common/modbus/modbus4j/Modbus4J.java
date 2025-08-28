@@ -46,7 +46,6 @@ import com.serotonin.modbus4j.msg.WriteRegistersResponse;
  * @version     v1.0
  *              v2.0  2025-06-30  添加：write系列方法
  *              v3.0  2025-07-15  添加：reads方法，按数据报文中数据项的类型，从两个常用的输出类型批量读取数据
- *              v4.0  2025-08-28  添加：出现异常时，是否重新连接
  */
 public class Modbus4J implements IModbus
 {
@@ -80,9 +79,6 @@ public class Modbus4J implements IModbus
     /** 是否初始，并初始化成功 */
     private boolean      isInit;
     
-    /** 出现异常时，是否重新连接。默认值：真 */
-    private boolean      reconnect;
-    
     /** 配置参数 */
     private MConnConfig  config;
     
@@ -94,35 +90,12 @@ public class Modbus4J implements IModbus
     
     public Modbus4J(MConnConfig i_MConnConfig)
     {
-        this.config    = i_MConnConfig;
-        this.isInit    = false;
-        this.reconnect = false;
+        this.config = i_MConnConfig;
+        this.isInit = false;
     }
     
     
     
-    /**
-     * 获取：出现异常时，是否重新连接。默认值：真
-     */
-    public boolean isReconnect()
-    {
-        return reconnect;
-    }
-
-
-    
-    /**
-     * 设置：出现异常时，是否重新连接。默认值：真
-     * 
-     * @param i_Reconnect 出现异常时，是否重新连接。默认值：真
-     */
-    public void setReconnect(boolean i_Reconnect)
-    {
-        this.reconnect = i_Reconnect;
-    }
-
-
-
     /**
      * 关闭连接，释放资源
      * 
@@ -257,7 +230,7 @@ public class Modbus4J implements IModbus
         catch (Exception exce)
         {
             $Logger.error(exce);
-            if ( this.reconnect )
+            if ( this.config.getReconnect() >= 1 )
             {
                 this.close();
             }
@@ -316,7 +289,7 @@ public class Modbus4J implements IModbus
         catch (Exception exce)
         {
             $Logger.error(exce);
-            if ( this.reconnect )
+            if ( this.config.getReconnect() >= 1 )
             {
                 this.close();
             }
@@ -375,7 +348,7 @@ public class Modbus4J implements IModbus
         catch (Exception exce)
         {
             $Logger.error(exce);
-            if ( this.reconnect )
+            if ( this.config.getReconnect() >= 1 )
             {
                 this.close();
             }
@@ -408,7 +381,7 @@ public class Modbus4J implements IModbus
         catch (Exception exce)
         {
             $Logger.error(exce);
-            if ( this.reconnect )
+            if ( this.config.getReconnect() >= 1 )
             {
                 this.close();
             }
@@ -467,7 +440,7 @@ public class Modbus4J implements IModbus
         catch (Exception exce)
         {
             $Logger.error(exce);
-            if ( this.reconnect )
+            if ( this.config.getReconnect() >= 1 )
             {
                 this.close();
             }
@@ -526,7 +499,7 @@ public class Modbus4J implements IModbus
         catch (Exception exce)
         {
             $Logger.error(exce);
-            if ( this.reconnect )
+            if ( this.config.getReconnect() >= 1 )
             {
                 this.close();
             }
@@ -560,7 +533,7 @@ public class Modbus4J implements IModbus
         catch (Exception exce)
         {
             $Logger.error(exce);
-            if ( this.reconnect )
+            if ( this.config.getReconnect() >= 1 )
             {
                 this.close();
             }
@@ -620,7 +593,7 @@ public class Modbus4J implements IModbus
         catch (Exception exce)
         {
             $Logger.error(exce);
-            if ( this.reconnect )
+            if ( this.config.getReconnect() >= 1 )
             {
                 this.close();
             }
@@ -679,7 +652,7 @@ public class Modbus4J implements IModbus
         catch (Exception exce)
         {
             $Logger.error(exce);
-            if ( this.reconnect )
+            if ( this.config.getReconnect() >= 1 )
             {
                 this.close();
             }
@@ -713,7 +686,7 @@ public class Modbus4J implements IModbus
         catch (Exception exce)
         {
             $Logger.error(exce);
-            if ( this.reconnect )
+            if ( this.config.getReconnect() >= 1 )
             {
                 this.close();
             }
@@ -773,7 +746,7 @@ public class Modbus4J implements IModbus
         catch (Exception exce)
         {
             $Logger.error(exce);
-            if ( this.reconnect )
+            if ( this.config.getReconnect() >= 1 )
             {
                 this.close();
             }
@@ -832,7 +805,7 @@ public class Modbus4J implements IModbus
         catch (Exception exce)
         {
             $Logger.error(exce);
-            if ( this.reconnect )
+            if ( this.config.getReconnect() >= 1 )
             {
                 this.close();
             }
@@ -935,7 +908,7 @@ public class Modbus4J implements IModbus
         catch (Exception exce)
         {
             $Logger.error(exce);
-            if ( this.reconnect )
+            if ( this.config.getReconnect() >= 1 )
             {
                 this.close();
             }
@@ -969,7 +942,7 @@ public class Modbus4J implements IModbus
         catch (Exception exce)
         {
             $Logger.error(exce);
-            if ( this.reconnect )
+            if ( this.config.getReconnect() >= 1 )
             {
                 this.close();
             }
@@ -1004,7 +977,7 @@ public class Modbus4J implements IModbus
         catch (Exception exce)
         {
             $Logger.error(exce);
-            if ( this.reconnect )
+            if ( this.config.getReconnect() >= 1 )
             {
                 this.close();
             }
@@ -1039,7 +1012,7 @@ public class Modbus4J implements IModbus
         catch (Exception exce)
         {
             $Logger.error(exce);
-            if ( this.reconnect )
+            if ( this.config.getReconnect() >= 1 )
             {
                 this.close();
             }
@@ -1113,7 +1086,7 @@ public class Modbus4J implements IModbus
         catch (Exception exce)
         {
             $Logger.error(exce);
-            if ( this.reconnect )
+            if ( this.config.getReconnect() >= 1 )
             {
                 this.close();
             }
@@ -1289,7 +1262,7 @@ public class Modbus4J implements IModbus
         catch (Exception exce)
         {
             $Logger.error(exce);
-            if ( this.reconnect )
+            if ( this.config.getReconnect() >= 1 )
             {
                 this.close();
             }

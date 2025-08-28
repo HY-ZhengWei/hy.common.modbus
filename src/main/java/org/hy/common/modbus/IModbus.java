@@ -69,22 +69,6 @@ public interface IModbus
     
     
     /**
-     * 获取：出现异常时，是否重新连接。默认值：真
-     */
-    public boolean isReconnect();
-
-
-    
-    /**
-     * 设置：出现异常时，是否重新连接。默认值：真
-     * 
-     * @param i_Reconnect 出现异常时，是否重新连接。默认值：真
-     */
-    public void setReconnect(boolean i_Reconnect);
-    
-    
-    
-    /**
      * 读取输出线圈（功能码01）。即，读取[01 Coil Status 0x]类型 开关数据
      * 
      * @author      ZhengWei(HY)
