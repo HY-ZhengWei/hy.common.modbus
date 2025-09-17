@@ -97,6 +97,22 @@ public class Modbus4J implements IModbus
     
     
     /**
+     * 获取主站连接信息
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-17
+     * @version     v1.0
+     *
+     * @return
+     */
+    public ModbusMaster getMaster()
+    {
+        return this.master;
+    }
+    
+    
+    
+    /**
      * 关闭连接，释放资源
      * 
      * @author      ZhengWei(HY)
