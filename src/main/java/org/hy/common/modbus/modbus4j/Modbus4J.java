@@ -46,6 +46,7 @@ import com.serotonin.modbus4j.msg.WriteRegistersResponse;
  * @version     v1.0
  *              v2.0  2025-06-30  添加：write系列方法
  *              v3.0  2025-07-15  添加：reads方法，按数据报文中数据项的类型，从两个常用的输出类型批量读取数据
+ *              v4.0  2025-09-28  添加：设置为连续请求，优化通信
  */
 public class Modbus4J implements IModbus
 {
@@ -287,6 +288,7 @@ public class Modbus4J implements IModbus
                     v_BatchRead.addLocator(x, BaseLocator.coilStatus(i_SlaveID, i_Offset));
                 }
                 
+                v_BatchRead.setContiguousRequests(true); // 设置为连续请求，优化通信
                 $BatchReadStatusCache.put(v_BatchKey ,v_BatchRead);
             }
         }
@@ -346,6 +348,7 @@ public class Modbus4J implements IModbus
                     v_BatchRead.addLocator(x, BaseLocator.coilStatus(i_SlaveID, v_DataItem.getOffset()));
                 }
                 
+                v_BatchRead.setContiguousRequests(true); // 设置为连续请求，优化通信
                 $BatchReadStatusCache.put(v_BatchKey ,v_BatchRead);
             }
         }
@@ -438,6 +441,7 @@ public class Modbus4J implements IModbus
                     v_BatchRead.addLocator(x, BaseLocator.inputStatus(i_SlaveID, i_Offset));
                 }
                 
+                v_BatchRead.setContiguousRequests(true); // 设置为连续请求，优化通信
                 $BatchReadStatusCache.put(v_BatchKey ,v_BatchRead);
             }
         }
@@ -497,6 +501,7 @@ public class Modbus4J implements IModbus
                     v_BatchRead.addLocator(x, BaseLocator.inputStatus(i_SlaveID ,v_DataItem.getOffset()));
                 }
                 
+                v_BatchRead.setContiguousRequests(true); // 设置为连续请求，优化通信
                 $BatchReadStatusCache.put(v_BatchKey ,v_BatchRead);
             }
         }
@@ -591,6 +596,7 @@ public class Modbus4J implements IModbus
                     v_BatchRead.addLocator(x, BaseLocator.holdingRegister(i_SlaveID ,i_Offset + x ,Modbus4JData.toDataType(i_DataType)));
                 }
                 
+                v_BatchRead.setContiguousRequests(true); // 设置为连续请求，优化通信
                 $BatchReadRegisterCache.put(v_BatchKey ,v_BatchRead);
             }
         }
@@ -650,6 +656,7 @@ public class Modbus4J implements IModbus
                     v_BatchRead.addLocator(x, BaseLocator.holdingRegister(i_SlaveID ,v_DataItem.getOffset() ,Modbus4JData.toDataType(v_DataItem.getDataType().getValue())));
                 }
                 
+                v_BatchRead.setContiguousRequests(true); // 设置为连续请求，优化通信
                 $BatchReadRegisterCache.put(v_BatchKey ,v_BatchRead);
             }
         }
@@ -744,6 +751,7 @@ public class Modbus4J implements IModbus
                     v_BatchRead.addLocator(x, BaseLocator.inputRegister(i_SlaveID ,i_Offset + x ,Modbus4JData.toDataType(i_DataType)));
                 }
                 
+                v_BatchRead.setContiguousRequests(true); // 设置为连续请求，优化通信
                 $BatchReadRegisterCache.put(v_BatchKey ,v_BatchRead);
             }
         }
@@ -803,6 +811,7 @@ public class Modbus4J implements IModbus
                     v_BatchRead.addLocator(x, BaseLocator.inputRegister(i_SlaveID ,v_DataItem.getOffset() ,Modbus4JData.toDataType(v_DataItem.getDataType().getValue())));
                 }
                 
+                v_BatchRead.setContiguousRequests(true); // 设置为连续请求，优化通信
                 $BatchReadRegisterCache.put(v_BatchKey ,v_BatchRead);
             }
         }

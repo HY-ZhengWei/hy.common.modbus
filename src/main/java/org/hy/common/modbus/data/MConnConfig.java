@@ -176,21 +176,21 @@ public class MConnConfig extends SerialPortConfig
     {
         StringBuilder v_Builder = new StringBuilder();
         
-        v_Builder.append(this.host).append(":");
-        
         if ( ModbusProtocol.TCP.equals(this.protocol) || ModbusProtocol.UDP.equals(this.protocol) )
         {
+            v_Builder.append(Help.NVL(this.host ,"?")).append(":");
             v_Builder.append(this.protocol.getValue()).append(":");
             v_Builder.append(this.port);
         }
         else if ( ModbusProtocol.RTU.equals(this.protocol) || ModbusProtocol.ASCII.equals(this.protocol) )
         {
+            v_Builder.append("127.0.0.1").append(":");
             v_Builder.append(this.protocol.getValue()).append(":");
             v_Builder.append(this.getCommPortName());
         }
         else
         {
-            v_Builder.append("::");
+            v_Builder.append("?:?:?");
         }
         
         return v_Builder.toString();

@@ -1,6 +1,5 @@
 package org.hy.common.modbus.modbus4j;
 
-
 import org.hy.common.modbus.enums.ModbusData;
 
 import com.serotonin.modbus4j.code.DataType;
