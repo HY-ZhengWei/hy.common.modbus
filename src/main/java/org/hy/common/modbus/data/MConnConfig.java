@@ -42,11 +42,15 @@ public class MConnConfig extends SerialPortConfig
     /** 出现异常时，是否重新连接。默认值：真 */
     private Integer        reconnect;
     
+    /** 有效标记。1有效；-1无效 */
+    private Integer        isValid;
+    
     
     
     public MConnConfig()
     {
         this.reconnect = 1;
+        this.isValid   = 1;
     }
     
     
@@ -170,6 +174,25 @@ public class MConnConfig extends SerialPortConfig
     }
 
     
+    /**
+     * 获取：有效标记。1有效；-1无效
+     */
+    public Integer getIsValid()
+    {
+        return isValid;
+    }
+
+    
+    /**
+     * 设置：有效标记。1有效；-1无效
+     * 
+     * @param i_IsValid 有效标记。1有效；-1无效
+     */
+    public void setIsValid(Integer i_IsValid)
+    {
+        this.isValid = i_IsValid;
+    }
+
 
     @Override
     public String toString()

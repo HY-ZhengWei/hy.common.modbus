@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hy.common.ByteHelp;
+import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.hart.serialPort.SerialPortFactory;
@@ -47,6 +48,8 @@ import com.serotonin.modbus4j.msg.WriteRegistersResponse;
  *              v2.0  2025-06-30  添加：write系列方法
  *              v3.0  2025-07-15  添加：reads方法，按数据报文中数据项的类型，从两个常用的输出类型批量读取数据
  *              v4.0  2025-09-28  添加：设置为连续请求，优化通信
+ *              v5.0  2025-09-30  添加：是否初始化、初始化时间、关闭时间
+ *                                添加：隐式开放获取Modbus协议配置
  */
 public class Modbus4J implements IModbus
 {
@@ -80,6 +83,12 @@ public class Modbus4J implements IModbus
     /** 是否初始，并初始化成功 */
     private boolean      isInit;
     
+    /** 初始化时间 */
+    private Date         initTime;
+    
+    /** 关闭时间 */
+    private Date         closeTime;
+    
     /** 配置参数 */
     private MConnConfig  config;
     
@@ -100,6 +109,8 @@ public class Modbus4J implements IModbus
     /**
      * 获取主站连接信息
      * 
+     * 采用非接口明确开放的隐式方式对外开放
+     * 
      * @author      ZhengWei(HY)
      * @createDate  2025-09-17
      * @version     v1.0
@@ -110,6 +121,25 @@ public class Modbus4J implements IModbus
     {
         return this.master;
     }
+    
+    
+    
+    /**
+     * 获取Modbus协议配置
+     * 
+     * 采用非接口明确开放的隐式方式对外开放
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-30
+     * @version     v1.0
+     *
+     * @return
+     */
+    public MConnConfig getMConnConfig()
+    {
+        return this.config;
+    }
+    
     
     
     
@@ -132,6 +162,7 @@ public class Modbus4J implements IModbus
                 if ( this.isInit )
                 {
                     this.master.destroy();
+                    this.closeTime = new Date();
                     $Logger.info("关闭连接成功：" + this.config.toString());
                 }
                 else
@@ -141,6 +172,7 @@ public class Modbus4J implements IModbus
             }
             catch (Exception exce)
             {
+                this.closeTime = new Date();
                 $Logger.error("关闭连接异常：" + this.config.toString() ,exce);
             }
             
@@ -150,6 +182,36 @@ public class Modbus4J implements IModbus
         }
         
         return v_Ret;
+    }
+    
+    
+    
+    /**
+     * 获取：关闭时间
+     */
+    public Date getCloseTime()
+    {
+        return closeTime;
+    }
+    
+    
+    
+    /**
+     * 获取：初始化时间
+     */
+    public Date getInitTime()
+    {
+        return initTime;
+    }
+
+
+    
+    /**
+     * 获取：是否初始，并初始化成功
+     */
+    public boolean isInit()
+    {
+        return isInit;
     }
     
     
@@ -218,7 +280,8 @@ public class Modbus4J implements IModbus
             return false;
         }
         
-        this.isInit = true;
+        this.isInit   = true;
+        this.initTime = new Date();
         return true;
     }
     

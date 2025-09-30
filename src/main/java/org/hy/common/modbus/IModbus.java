@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.hy.common.Date;
 import org.hy.common.modbus.data.MDataItem;
 
 
@@ -18,6 +19,7 @@ import org.hy.common.modbus.data.MDataItem;
  * @version     v1.0
  *              v2.0  2025-06-30  添加：write系列方法
  *              v3.0  2025-07-15  添加：reads方法，按数据报文中数据项的类型，从两个常用的输出类型批量读取数据
+ *              v4.0  2025-09-30  添加：是否初始化、初始化时间、关闭时间
  */
 public interface IModbus
 {
@@ -52,6 +54,27 @@ public interface IModbus
      * @return  是否成功
      */
     public boolean close();
+    
+    
+    
+    /**
+     * 获取：关闭时间
+     */
+    public Date getCloseTime();
+    
+    
+    
+    /**
+     * 获取：初始化时间
+     */
+    public Date getInitTime();
+    
+    
+    
+    /**
+     * 获取：是否初始，并初始化成功
+     */
+    public boolean isInit();
     
     
     
