@@ -3,6 +3,7 @@ package org.hy.common.modbus.data;
 import java.io.Serializable;
 
 import org.hy.common.modbus.enums.ModbusData;
+import org.hy.common.modbus.enums.ModbusFunCode;
 
 
 
@@ -14,6 +15,7 @@ import org.hy.common.modbus.enums.ModbusData;
  * @author      ZhengWei(HY)
  * @createDate  2024-01-26
  * @version     v1.0
+ *              v2.0  2025-10-13  添加：功能码
  */
 public class MDataItem implements Serializable
 {
@@ -23,22 +25,25 @@ public class MDataItem implements Serializable
     
 
     /** 数据变量名称 */
-    private String     name;
+    private String        name;
     
     /** 偏移位置，即相对地址。下标从 0 开始 */
-    private Integer    offset;
+    private Integer       offset;
     
     /** 数据类型。参见 org.hy.common.modbus.enums.ModbusData */
-    private ModbusData dataType;
+    private ModbusData    dataType;
+    
+    /** 功能码 */
+    private ModbusFunCode funCode;
     
     /** 数据（用于写入） */
-    private String     data;
+    private String        data;
     
     
     
     public MDataItem()
     {
-        
+        this.funCode = ModbusFunCode.Auto;
     }
     
     
@@ -115,8 +120,28 @@ public class MDataItem implements Serializable
     {
         this.dataType = i_DataType;
     }
+    
+    
+    /**
+     * 获取：功能码
+     */
+    public ModbusFunCode getFunCode()
+    {
+        return funCode;
+    }
 
     
+    /**
+     * 设置：功能码
+     * 
+     * @param i_FunCode 功能码
+     */
+    public void setFunCode(ModbusFunCode i_FunCode)
+    {
+        this.funCode = i_FunCode;
+    }
+
+
     /**
      * 获取：数据（用于写入）
      */

@@ -7,12 +7,14 @@ import org.hy.common.hart.enums.DataBit;
 import org.hy.common.hart.enums.Parity;
 import org.hy.common.hart.enums.StopBit;
 import org.hy.common.hart.enums.TimeoutMode;
+import org.hy.common.hart.serialPort.SerialPortConfig;
 import org.hy.common.hart.serialPort.SerialPortFactory;
 import org.hy.common.modbus.IModbus;
 import org.hy.common.modbus.data.MConnConfig;
 import org.hy.common.modbus.enums.ModbusProtocol;
 import org.hy.common.modbus.enums.ModbusType;
 import org.hy.common.modbus.modbus4j.Modbus4J;
+import org.junit.Test;
 
 import com.serotonin.modbus4j.BatchRead;
 import com.serotonin.modbus4j.BatchResults;
@@ -41,6 +43,70 @@ import com.serotonin.modbus4j.msg.ReadInputRegistersResponse;
 public class JU_ModbusRTU_Thermocouple
 {
     
+    @Test
+    public void test_HKPyrometer() throws InterruptedException
+    {
+        List<SerialPortConfig> v_CommPorts = SerialPortFactory.getCommPorts();
+        Help.toSort(v_CommPorts ,"commPortName");
+        Help.print(v_CommPorts);
+        
+        MConnConfig v_Config = new MConnConfig();
+        v_Config.setProtocol(ModbusProtocol.RTU);
+        v_Config.setCommPortName("USB Serial Port (COM5)");
+        v_Config.setType(    ModbusType.Master);
+        v_Config.setBaudRate(9600);
+        v_Config.setParityCheck(Parity.Even);
+        v_Config.setDataBits(DataBit.DataBit_8);
+        v_Config.setStopBit(StopBit.One);
+        v_Config.setTimeout(3000);
+        v_Config.setReadTimeout(3000);
+        v_Config.setWriteTimeout(3000);   
+        v_Config.setTimeoutModes(TimeoutMode.NonBlocking.getValue());
+        v_Config.setReconnect(-1);
+        
+        
+        IModbus v_Modbus = new Modbus4J(v_Config);
+        if ( v_Modbus.init() )
+        {
+            for (int i=1; i<=3; i++)
+            {
+                Number [] v_Value = v_Modbus.readInputRegister(1 ,560 ,DataType.TWO_BYTE_INT_UNSIGNED ,2);
+                System.out.println("读取到的数: " + toFloat(v_Value[0].intValue() ,v_Value[1].intValue()));
+                Help.print(v_Value);
+                
+                v_Value = v_Modbus.readInputRegister(1 ,562 ,DataType.TWO_BYTE_INT_UNSIGNED ,2);
+                Help.print(v_Value);
+                Thread.sleep(1000);
+            }
+            
+            v_Modbus.close();
+        }
+        else
+        {
+            System.out.println("初始化Modbus异常");
+        }
+    }
+    
+    
+    
+    /**
+     * 高低位两整数转为浮点数。算法：高低位合并 + 缩放还原
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-17
+     * @version     v1.0
+     *
+     * @param i_High  高位数值
+     * @param i_Low   低位数值
+     * @return
+     */
+    public static Float toFloat(int i_High ,int i_Low)
+    {
+        return (((long) i_High << 16) | i_Low) / 1F;
+    }
+    
+    
+    
     // java -Dlog4j.configurationFile=./classes/config/ms.log4j2.xml -cp "classes:lib/*:/opt/tomcat/lib/*" org.hy.common.modbus.junit.JU_ModbusRTU_Thermocouple
     public static void main(String [] i_Args) throws InterruptedException
     {
@@ -53,7 +119,7 @@ public class JU_ModbusRTU_Thermocouple
         v_Config.setCommPortName("/dev/ttyS3");
         v_Config.setType(    ModbusType.Master);
         v_Config.setBaudRate(9600);
-        v_Config.setParityCheck(Parity.None);
+        v_Config.setParityCheck(Parity.Even);
         v_Config.setDataBits(DataBit.DataBit_8);
         v_Config.setStopBit(StopBit.One);
         v_Config.setTimeout(3000);

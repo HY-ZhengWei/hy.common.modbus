@@ -16,6 +16,7 @@ import org.hy.common.modbus.IModbus;
 import org.hy.common.modbus.data.MConnConfig;
 import org.hy.common.modbus.data.MDataItem;
 import org.hy.common.modbus.enums.ModbusData;
+import org.hy.common.modbus.enums.ModbusFunCode;
 import org.hy.common.modbus.enums.ModbusProtocol;
 import org.hy.common.modbus.enums.ModbusType;
 import org.hy.common.xml.log.Logger;
@@ -50,6 +51,7 @@ import com.serotonin.modbus4j.msg.WriteRegistersResponse;
  *              v4.0  2025-09-28  添加：设置为连续请求，优化通信
  *              v5.0  2025-09-30  添加：是否初始化、初始化时间、关闭时间
  *                                添加：隐式开放获取Modbus协议配置
+ *              v6.0  2025-10-13  添加：指定Modbus功能码的批量读取
  */
 public class Modbus4J implements IModbus
 {
@@ -914,6 +916,7 @@ public class Modbus4J implements IModbus
      * @author      ZhengWei(HY)
      * @createDate  2025-07-15
      * @version     v1.0
+     *              v2.0  2025-10-13  添加：指定Modbus功能码的批量读取
      *
      * @param i_SlaveID
      * @param i_Datagram
@@ -926,49 +929,100 @@ public class Modbus4J implements IModbus
             return null;
         }
         
-        List<MDataItem> v_DatagramBoolean = new ArrayList<MDataItem>();
-        List<MDataItem> v_DatagramInteger = new ArrayList<MDataItem>();
+        List<MDataItem> v_DatagramFun1    = new ArrayList<MDataItem>();  // 0x 输入线圈     【默认的】
+        List<MDataItem> v_DatagramFun2    = new ArrayList<MDataItem>();  // 1x 输出线圈
+        List<MDataItem> v_DatagramFun3    = new ArrayList<MDataItem>();  // 2x 输出寄存器    【默认的】
+        List<MDataItem> v_DatagramFun4    = new ArrayList<MDataItem>();  // 3x 输入寄存器
         for (MDataItem v_MDItem : i_Datagram)
         {
-            if ( ModbusData.D1Bit.equals(v_MDItem.getDataType()) )
+            if ( v_MDItem.getFunCode() == null || ModbusFunCode.Auto.equals(v_MDItem.getFunCode()) )
             {
-                v_DatagramBoolean.add(v_MDItem);
+                if ( ModbusData.D1Bit.equals(v_MDItem.getDataType()) )
+                {
+                    v_DatagramFun1.add(v_MDItem);
+                }
+                else
+                {
+                    v_DatagramFun3.add(v_MDItem);
+                }
+            }
+            else if ( ModbusFunCode.InputStatus.equals(v_MDItem.getFunCode()) )
+            {
+                v_DatagramFun1.add(v_MDItem);
+            }
+            else if ( ModbusFunCode.CoilStatus.equals(v_MDItem.getFunCode()) )
+            {
+                v_DatagramFun2.add(v_MDItem);
+            }
+            else if ( ModbusFunCode.HoldingRegiste.equals(v_MDItem.getFunCode()) )
+            {
+                v_DatagramFun3.add(v_MDItem);
+            }
+            else if ( ModbusFunCode.InputRegister.equals(v_MDItem.getFunCode()) )
+            {
+                v_DatagramFun4.add(v_MDItem);
             }
             else
             {
-                v_DatagramInteger.add(v_MDItem);
+                $Logger.error(new RuntimeException("未知类型"));
             }
         }
         
-        Map<String ,Object> v_RetBoolean = null;
-        Map<String ,Object> v_RetInteger = null;
-        if ( !Help.isNull(v_DatagramBoolean) )
+        Map<String ,Object> v_Ret  = new LinkedHashMap<String ,Object>();
+        Map<String ,Object> v_Temp = null;
+        try
         {
-            v_RetBoolean = this.readOutputStatus(i_SlaveID ,v_DatagramBoolean);
+            if ( !Help.isNull(v_DatagramFun1) )
+            {
+                v_Temp = this.readOutputStatus(i_SlaveID ,v_DatagramFun1);
+                if ( !Help.isNull(v_Temp) )
+                {
+                    v_Ret.putAll(v_Temp);
+                    v_Temp.clear();
+                }
+            }
+            if ( !Help.isNull(v_DatagramFun2) )
+            {
+                v_Temp = this.readInputStatus(i_SlaveID ,v_DatagramFun2);
+                if ( !Help.isNull(v_Temp) )
+                {
+                    v_Ret.putAll(v_Temp);
+                    v_Temp.clear();
+                }
+            }
+            if ( !Help.isNull(v_DatagramFun3) )
+            {
+                v_Temp = this.readOutputRegister(i_SlaveID ,v_DatagramFun3);
+                if ( !Help.isNull(v_Temp) )
+                {
+                    v_Ret.putAll(v_Temp);
+                    v_Temp.clear();
+                }
+            }
+            if ( !Help.isNull(v_DatagramFun4) )
+            {
+                v_Temp = this.readInputRegister(i_SlaveID ,v_DatagramFun4);
+                if ( !Help.isNull(v_Temp) )
+                {
+                    v_Ret.putAll(v_Temp);
+                    v_Temp.clear();
+                }
+            }
         }
-        if ( !Help.isNull(v_DatagramInteger) )
+        finally
         {
-            v_RetInteger = this.readOutputRegister(i_SlaveID ,v_DatagramInteger);
+            v_DatagramFun1.clear();
+            v_DatagramFun2.clear();
+            v_DatagramFun3.clear();
+            v_DatagramFun4.clear();
+            
+            v_DatagramFun1 = null;
+            v_DatagramFun2 = null;
+            v_DatagramFun3 = null;
+            v_DatagramFun4 = null;
         }
         
-        if ( Help.isNull(v_RetBoolean) && Help.isNull(v_DatagramInteger) )
-        {
-            return new LinkedHashMap<String ,Object>();
-        }
-        else if ( Help.isNull(v_RetBoolean) )
-        {
-            return v_RetInteger;
-        }
-        else if ( Help.isNull(v_RetInteger) )
-        {
-            return v_RetBoolean;
-        }
-        else
-        {
-            v_RetBoolean.putAll(v_RetInteger);
-            v_RetInteger.clear();
-            return v_RetBoolean;
-        }
+        return v_Ret;
     }
     
     
