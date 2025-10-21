@@ -1,7 +1,5 @@
 package org.hy.common.modbus.data;
 
-import org.hy.common.xml.annotation.Xjava;
-
 
 
 
@@ -13,7 +11,6 @@ import org.hy.common.xml.annotation.Xjava;
  * @createDate  2025-10-13
  * @version     v1.0
  */
-@Xjava
 public class ReadFloat
 {
     
@@ -28,7 +25,7 @@ public class ReadFloat
      * @param i_Low   低位数值
      * @return
      */
-    public Float toFloat(int i_High ,int i_Low)
+    public static Float toFloat(int i_High ,int i_Low)
     {
         return (((long) i_High << 16) | i_Low) * 1F;
     }
@@ -46,7 +43,7 @@ public class ReadFloat
      * @param i_Low   低位数值
      * @return
      */
-    public Float toFloatIEEE754(int i_High ,int i_Low)
+    public static Float toFloatIEEE754(int i_High ,int i_Low)
     {
         int v_Combined = (i_High << 16) | (i_Low & 0xFFFF);
         return Float.intBitsToFloat(v_Combined);

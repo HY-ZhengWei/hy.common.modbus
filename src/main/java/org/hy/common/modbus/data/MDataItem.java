@@ -59,6 +59,7 @@ public class MDataItem implements Serializable
         this.offset   = i_Offset;
         this.dataType = i_DataType;
         this.data     = i_Data;
+        this.funCode  = ModbusFunCode.Auto;
     }
     
     

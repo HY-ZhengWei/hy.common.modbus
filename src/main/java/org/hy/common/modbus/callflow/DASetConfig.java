@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.hy.common.Help;
 import org.hy.common.Return;
+import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.execute.ExecuteElement;
@@ -146,6 +147,22 @@ public class DASetConfig extends NodeConfig implements NodeConfigBase
         }
         
         return true;
+    }
+    
+    
+    
+    /**
+     * 当用户没有设置XID时，可使用此方法生成
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-21
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String makeXID()
+    {
+        return "XDAS_" + StringHelp.getUUID9n();
     }
     
     
