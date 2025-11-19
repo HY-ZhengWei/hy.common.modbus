@@ -6,7 +6,7 @@
 
     <groupId>cn.openapis</groupId>
     <artifactId>hy.common.modbus</artifactId>
-    <version>1.1.5</version>
+    <version>1.1.6</version>
     <packaging>jar</packaging>
 
     <name>cn.openapis.hy.common.modbus</name>
@@ -89,7 +89,7 @@
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.callflow</artifactId>
-            <version>1.6.9</version>
+            <version>1.7.0</version>
             <scope>provided</scope>
         </dependency>
         
