@@ -1,6 +1,6 @@
-Manifest-Version: 1.1.6
+Manifest-Version: 1.1.7
 Created-By: HY.ZhengWei@qq.com  2024-01
-Specification-Version: 1.1.6  2025-11-19
+Specification-Version: 1.1.7  2026-02-26
 SourceCode: https://github.com/HY-ZhengWei/hy.common.modbus
 SourceCodeChina: https://gitee.com/HY-ZhengWei/hy.common.modbus
 Build-JDK: 17

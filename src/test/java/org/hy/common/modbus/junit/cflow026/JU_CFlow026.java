@@ -72,7 +72,7 @@ public class JU_CFlow026 extends JUBase
     private void initDeviceXID()
     {
         MConnConfig v_Config = new MConnConfig();
-        v_Config.setHost("192.168.0.101");
+        v_Config.setHost("192.168.0.121");
         v_Config.setPort(502);
         v_Config.setProtocol(ModbusProtocol.TCP);
         v_Config.setType(    ModbusType.Master);
