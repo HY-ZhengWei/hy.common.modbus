@@ -41,7 +41,8 @@ $targetPomFiles = Get-ChildItem -Path $targetDir -Filter "pom.xml" -Recurse |
         # 条件1：排除源pom.xml文件
         $_.FullName -ne $sourcePomPath -and 
         # 条件2：排除当前目录下的所有pom.xml
-        $_.FullName -notlike "$currentDirPrefix*"
+        $_.FullName -notlike "$currentDirPrefix*" -and
+        $_.FullName -notlike "*\target\*"
     }
 
 if ($targetPomFiles.Count -eq 0) {
@@ -51,8 +52,6 @@ if ($targetPomFiles.Count -eq 0) {
 
 # 遍历每个目标pom.xml
 foreach ($pomFile in $targetPomFiles) {
-    Write-Host "`nFinding: $($pomFile.FullName)" -ForegroundColor Cyan
-    
     try {
         # 读取文件内容（Raw模式保留格式，避免XML解析破坏缩进）
         $content = Get-Content -Path $pomFile.FullName -Encoding UTF8 -Raw
@@ -62,6 +61,7 @@ foreach ($pomFile in $targetPomFiles) {
         $pattern = '(?s)(?<=<artifactId>' + $targetArtifactId + '</artifactId>\s*<version>)([^<]+)(?=</version>)'
 
         if ($content -match $pattern) {
+            Write-Host "`nFinding: $($pomFile.FullName)" -ForegroundColor Cyan
             $oldVersion = $matches[1]  # 提取旧版本号
             if ($oldVersion -ne $newVersion) {
                 # 直接替换匹配到的旧版本号为新版本号（无任何$分组引用）
@@ -74,7 +74,7 @@ foreach ($pomFile in $targetPomFiles) {
             }
         }
         else {
-            Write-Host "Skipped: Not find" -ForegroundColor Gray
+            # Write-Host "Skipped: Not find" -ForegroundColor Gray
         }
     }
     catch {
